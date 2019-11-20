@@ -1,0 +1,23 @@
+#!/bin/sh
+echo "=========================== 0. Please wait one minute" 
+rm tags -f
+ctags -R >/dev/null 2>&1
+echo "=========================== 1. Ctags Create Over" 
+sleep 1
+
+rm cscope.in.out cscope.out cscope.po.out -f
+find . -name "*.h" -o -name "*.c" > cscope.file
+echo "=========================== 2. Find .h or .c Over" 
+sleep 1
+
+##  模式中的#号是分隔符,用来代替原来的/的,因为`pwd`中有/,如果不使用#号的话就需要去转义/
+##  这样改变分隔符可以快速的解决转义的麻烦
+##  sed -i 's/^\./`pwd`/' cscope.file
+
+sed -i "s#^\.#`pwd`#" cscope.file
+echo "=========================== 3. Sed pattern Over"
+sleep 1
+
+cscope -bkq -i cscope.file >/dev/null 2>&1
+echo "=========================== 4. Create cscope.out Over"
+echo ""
